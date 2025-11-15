@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Percentages: Increase and Decrease</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --bg: #f5f5f9;
+      --bg-panel: #ffffff;
+      --text: #222222;
+      --accent: #1976d2;
+      --accent-soft: #e3f2fd;
+      --danger: #c62828;
+      --success: #2e7d32;
+      --border: #cccccc;
+      --muted: #666666;
+    }
+
+    body.high-contrast {
+      --bg: #000000;
+      --bg-panel: #111111;
+      --text: #ffffff;
+      --accent: #ffcc00;
+      --accent-soft: #333333;
+      --danger: #ff5252;
+      --success: #69f0ae;
+      --border: #555555;
+      --muted: #aaaaaa;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    .app-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 2.1rem;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 1rem;
+      color: var(--muted);
+    }
+
+    .mode-toggle {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 16px 0;
+      flex-wrap: wrap;
+    }
+
+    .mode-toggle button {
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-panel);
+      cursor: pointer;
+      font-size: 1rem;
+      min-width: 130px;
+    }
+
+    .mode-toggle button.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .panel {
+      background: var(--bg-panel);
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      margin-bottom: 16px;
+    }
+
+    .flex {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .flex-space {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .difficulty-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .difficulty-buttons button {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      background: var(--bg-panel);
+      min-width: 90px;
+    }
+
+    .difficulty-buttons button.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      font-weight: 600;
+    }
+
+    .badge {
+      font-size: 1.1rem;
+      margin-right: 4px;
+    }
+
+    .question-display {
+      font-size: 1.6rem;
+      text-align: center;
+      margin: 8px 0 16px;
+      min-height: 3rem;
+    }
+
+    .question-display span.highlight {
+      font-weight: 700;
+    }
+
+    .answer-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .answer-row input[type="text"] {
+      font-size: 1.4rem;
+      padding: 6px 10px;
+      min-width: 160px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .answer-row button {
+      font-size: 1rem;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      background: var(--bg-panel);
+    }
+
+    .answer-row button.primary {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .answer-row button:disabled {
+      opacity: 0.5;
+      cursor: default;
+    }
+
+    .toggles-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      font-size: 0.95rem;
+    }
+
+    .toggle-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    select {
+      padding: 4px 6px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      font-size: 0.95rem;
+    }
+
+    .feedback-layout {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .feedback-panel, .summary-panel {
+      flex: 1 1 240px;
+      border-radius: 12px;
+      padding: 10px 12px;
+      background: var(--accent-soft);
+      min-height: 80px;
+    }
+
+    .feedback-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+      font-size: 1.05rem;
+    }
+
+    .feedback-message {
+      font-size: 1rem;
+      min-height: 1.4em;
+    }
+
+    .feedback-message.correct {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .feedback-message.incorrect {
+      color: var(--danger);
+      font-weight: 600;
+    }
+
+    .small-text {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .steps {
+      margin-top: 6px;
+      font-size: 0.95rem;
+    }
+
+    .steps p {
+      margin: 2px 0;
+    }
+
+    .summary-panel ul {
+      list-style: none;
+      padding-left: 0;
+      margin: 4px 0 0;
+      font-size: 0.95rem;
+    }
+
+    .summary-panel li {
+      margin: 2px 0;
+    }
+
+    details {
+      margin-top: 6px;
+      font-size: 0.9rem;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    /* Worksheet mode */
+    .worksheet-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .worksheet-controls label {
+      font-size: 0.95rem;
+    }
+
+    .worksheet-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .worksheet-actions button {
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-panel);
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .worksheet {
+      margin-top: 12px;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+
+    .worksheet-header {
+      font-weight: 600;
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+
+    .worksheet-list {
+      list-style: decimal;
+      padding-left: 24px;
+    }
+
+    .worksheet-question {
+      margin-bottom: 24px; /* IMPORTANT: spacing between problems */
+      line-height: 1.5;
+    }
+
+    .worksheet-question .q-text {
+      font-size: 1rem;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .worksheet-question .answer-line {
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    .worksheet-question .answer-line span.answer {
+      display: none;
+      font-weight: 600;
+      color: var(--success);
+    }
+
+    .worksheet-question button.reveal-one {
+      margin-top: 4px;
+      font-size: 0.85rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-panel);
+      cursor: pointer;
+    }
+
+    /* Dev panel */
+    #dev-panel {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px dashed var(--border);
+      background: #fff3e0;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    #dev-output {
+      margin-top: 6px;
+      white-space: pre-wrap;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    @media (max-width: 700px) {
+      .question-display {
+        font-size: 1.3rem;
+      }
+
+      .answer-row input[type="text"] {
+        font-size: 1.2rem;
+        min-width: 130px;
+      }
+
+      .panel {
+        padding: 12px;
+      }
+
+      .app-container {
+        padding: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <h1>Percentages: Increase and Decrease</h1>
+      <p class="subtitle">Practice calculating the new value after a percent increase or decrease.</p>
+    </header>
+
+    <div class="mode-toggle" role="tablist" aria-label="Mode selector">
+      <button id="mode-game-btn" class="active" role="tab" aria-selected="true">Game Mode</button>
+      <button id="mode-worksheet-btn" role="tab" aria-selected="false">Worksheet Mode</button>
+    </div>
+
+    <!-- GAME MODE -->
+    <section id="game-mode" class="panel" aria-label="Game mode">
+      <div class="flex-space" style="margin-bottom: 10px;">
+        <div class="difficulty-buttons" aria-label="Difficulty selector">
+          <button data-diff="easy" class="active"><span class="badge>">🟢</span> Easy</button>
+          <button data-diff="medium"><span class="badge">🟡</span> Medium</button>
+          <button data-diff="hard"><span class="badge">🔴</span> Hard</button>
+          <button data-diff="random"><span class="badge">🎲</span> Random</button>
+        </div>
+        <button id="reset-session-btn" style="font-size:0.9rem;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg-panel);cursor:pointer;">
+          Reset session
+        </button>
+      </div>
+
+      <div class="question-display" id="question-display" aria-live="polite"></div>
+
+      <div class="answer-row">
+        <label for="answer-input" class="visually-hidden" aria-hidden="true" style="position:absolute;left:-9999px;">Answer</label>
+        <input type="text" id="answer-input" autocomplete="off" inputmode="decimal" placeholder="Type your answer">
+        <button id="submit-btn" class="primary">Submit</button>
+        <button id="next-btn" disabled>Next</button>
+      </div>
+
+      <div class="toggles-row">
+        <div class="toggle-group">
+          <input type="checkbox" id="sound-toggle" checked>
+          <label for="sound-toggle">Sound On</label>
+        </div>
+        <div class="toggle-group">
+          <input type="checkbox" id="timer-toggle">
+          <label for="timer-toggle">Timer</label>
+          <select id="timer-select">
+            <option value="30">30 s</option>
+            <option value="60" selected>60 s</option>
+            <option value="90">90 s</option>
+            <option value="120">120 s</option>
+          </select>
+          <span id="timer-display" class="small-text"></span>
+        </div>
+        <div class="toggle-group">
+          <input type="checkbox" id="contrast-toggle">
+          <label for="contrast-toggle">High contrast</label>
+        </div>
+      </div>
+
+      <div class="feedback-layout" style="margin-top:12px;">
+        <div class="feedback-panel" aria-live="polite">
+          <div class="feedback-title">Feedback</div>
+          <div id="feedback-message" class="feedback-message"></div>
+          <div id="correct-answer-line" class="small-text"></div>
+          <button id="show-steps-btn" style="margin-top:6px;font-size:0.9rem;padding:4px 8px;border-radius:8px;border:1px solid var(--border);background:var(--bg-panel);cursor:pointer;display:none;">
+            Show steps
+          </button>
+          <div id="steps-container" class="steps"></div>
+          <div class="small-text" style="margin-top:6px;">
+            Enter = Submit (or Next after checking), Esc = Clear
+          </div>
+        </div>
+        <div class="summary-panel">
+          <div class="feedback-title">Session Summary</div>
+          <ul>
+            <li>Total questions: <span id="stat-total">0</span></li>
+            <li>Correct: <span id="stat-correct">0</span></li>
+            <li>Accuracy: <span id="stat-accuracy">0%</span></li>
+            <li>Score: <span id="stat-score">0</span></li>
+            <li>Current streak: <span id="stat-streak">0</span></li>
+            <li>Best streak: <span id="stat-best-streak">0</span></li>
+          </ul>
+          <details id="incorrect-details">
+            <summary>View incorrect questions</summary>
+            <div id="incorrect-list"></div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKSHEET MODE -->
+    <section id="worksheet-mode" class="panel" aria-label="Worksheet mode" style="display:none;">
+      <div class="worksheet-controls">
+        <div class="flex" style="gap:6px;">
+          <label for="worksheet-difficulty">Difficulty:</label>
+          <select id="worksheet-difficulty">
+            <option value="easy">🟢 Easy</option>
+            <option value="medium">🟡 Medium</option>
+            <option value="hard">🔴 Hard</option>
+          </select>
+        </div>
+        <div class="flex" style="gap:6px;">
+          <label for="worksheet-count">Number of questions:</label>
+          <select id="worksheet-count">
+            <option value="5">5</option>
+            <option value="10" selected>10</option>
+            <option value="15">15</option>
+          </select>
+        </div>
+        <div class="worksheet-actions">
+          <button id="generate-worksheet-btn">Generate worksheet</button>
+          <button id="reveal-all-btn">Reveal all answers</button>
+          <button id="hide-all-btn">Hide all answers</button>
+        </div>
+      </div>
+      <div class="worksheet">
+        <div class="worksheet-header">
+          Instruction: Calculate the new value after the percent increase or decrease.
+        </div>
+        <ol id="worksheet-list" class="worksheet-list">
+          <!-- Worksheet questions injected here -->
+        </ol>
+      </div>
+    </section>
+
+    <div id="dev-panel">
+      <strong>Developer Tests (dev mode)</strong>
+      <button id="run-dev-tests-btn" style="margin-left:8px;">Run tests</button>
+      <div id="dev-output"></div>
+    </div>
+
+    <div class="footer">
+      Created by Mr. McLean Math.
+    </div>
+  </div>
+
+  <script>
+    // ---------- Utility functions ----------
+    function formatNumber(value) {
+      const isNegative = value < 0;
+      let abs = Math.abs(value);
+      let str = abs % 1 === 0 ? abs.toString() : abs.toFixed(2);
+      // Remove trailing zeros after decimal
+      if (str.includes(".")) {
+        str = str.replace(/0+$/, "").replace(/\.$/, "");
+      }
+      const parts = str.split(".");
+      let intPart = parts[0];
+      const decPart = parts.length > 1 ? "." + parts[1] : "";
+      intPart = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+      return (isNegative ? "-" : "") + intPart + decPart;
+    }
+
+    function parseNumericInput(str) {
+      if (!str) return NaN;
+      str = str.trim().replace(/\s+/g, "");
+      str = str.replace(",", ".");
+      const val = Number(str);
+      return isNaN(val) ? NaN : val;
+    }
+
+    function roundToTwo(value) {
+      return Math.round(value * 100) / 100;
+    }
+
+    // ---------- Question generation ----------
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function chooseRandom(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function generatePercent(difficulty) {
+      if (difficulty === "easy") {
+        return getRandomInt(5, 30); // whole percents
+      } else if (difficulty === "medium") {
+        return getRandomInt(10, 60);
+      } else {
+        // hard: 1-90, occasionally half percents (like 7.5, 12.5)
+        const useHalf = Math.random() < 0.25; // 25% of the time
+        if (useHalf) {
+          const base = getRandomInt(1, 90);
+          return base + 0.5;
+        } else {
+          return getRandomInt(1, 90);
+        }
+      }
+    }
+
+    function generateBaseAmount(difficulty) {
+      if (difficulty === "easy") {
+        return getRandomInt(10, 150);
+      } else if (difficulty === "medium") {
+        return getRandomInt(20, 200);
+      } else {
+        return getRandomInt(50, 999);
+      }
+    }
+
+    function generateQuestion(difficulty) {
+      let diff = difficulty;
+      if (difficulty === "random") {
+        diff = chooseRandom(["easy", "medium", "hard"]);
+      }
+
+      const base = generateBaseAmount(diff);
+      let percent = generatePercent(diff);
+
+      // Avoid exactly 0% or 100%
+      if (percent === 0) percent = 1;
+      if (percent === 100) percent = 99;
+
+      const changeType = Math.random() < 0.5 ? "increase" : "decrease";
+
+      let factor;
+      if (changeType === "increase") {
+        factor = 1 + percent / 100;
+      } else {
+        factor = 1 - percent / 100;
+      }
+
+      let result = base * factor;
+      result = roundToTwo(result);
+
+      return {
+        difficulty: diff,
+        base: base,
+        percent: percent,
+        changeType: changeType,
+        result: result
+      };
+    }
+
+    function questionToText(q) {
+      const action = q.changeType === "increase" ? "Increase" : "Decrease";
+      const pctStr = (q.percent % 1 === 0)
+        ? q.percent.toString()
+        : q.percent.toString().replace(".", "."); // keep dot
+      return action + " " + formatNumber(q.base) + " by " + pctStr + "%";
+    }
+
+    // ---------- Game state ----------
+    const difficultyButtons = document.querySelectorAll(".difficulty-buttons button");
+    const questionDisplay = document.getElementById("question-display");
+    const answerInput = document.getElementById("answer-input");
+    const submitBtn = document.getElementById("submit-btn");
+    const nextBtn = document.getElementById("next-btn");
+    const feedbackMessage = document.getElementById("feedback-message");
+    const correctAnswerLine = document.getElementById("correct-answer-line");
+    const showStepsBtn = document.getElementById("show-steps-btn");
+    const stepsContainer = document.getElementById("steps-container");
+    const statTotal = document.getElementById("stat-total");
+    const statCorrect = document.getElementById("stat-correct");
+    const statAccuracy = document.getElementById("stat-accuracy");
+    const statScore = document.getElementById("stat-score");
+    const statStreak = document.getElementById("stat-streak");
+    const statBestStreak = document.getElementById("stat-best-streak");
+    const incorrectDetails = document.getElementById("incorrect-details");
+    const incorrectList = document.getElementById("incorrect-list");
+    const resetSessionBtn = document.getElementById("reset-session-btn");
+
+    const soundToggle = document.getElementById("sound-toggle");
+    const timerToggle = document.getElementById("timer-toggle");
+    const timerSelect = document.getElementById("timer-select");
+    const timerDisplay = document.getElementById("timer-display");
+    const contrastToggle = document.getElementById("contrast-toggle");
+
+    const modeGameBtn = document.getElementById("mode-game-btn");
+    const modeWorksheetBtn = document.getElementById("mode-worksheet-btn");
+    const gameModeSection = document.getElementById("game-mode");
+    const worksheetModeSection = document.getElementById("worksheet-mode");
+
+    const worksheetDifficulty = document.getElementById("worksheet-difficulty");
+    const worksheetCount = document.getElementById("worksheet-count");
+    const generateWorksheetBtn = document.getElementById("generate-worksheet-btn");
+    const revealAllBtn = document.getElementById("reveal-all-btn");
+    const hideAllBtn = document.getElementById("hide-all-btn");
+    const worksheetList = document.getElementById("worksheet-list");
+
+    const devPanel = document.getElementById("dev-panel");
+    const runDevTestsBtn = document.getElementById("run-dev-tests-btn");
+    const devOutput = document.getElementById("dev-output");
+
+    let currentDifficulty = "easy";
+    let currentQuestion = null;
+    let questionChecked = false;
+    let lastAnswerCorrect = false;
+
+    let stats = {
+      total: 0,
+      correct: 0,
+      score: 0,
+      streak: 0,
+      bestStreak: 0,
+      incorrect: []
+    };
+
+    // Timer state
+    let timerId = null;
+    let remainingSeconds = 0;
+
+    // Sound using Web Audio API
+    let audioCtx = null;
+    function playBeep(frequency, duration) {
+      if (!soundToggle.checked) return;
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.type = "sine";
+        oscillator.frequency.value = frequency;
+        gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + duration / 1000);
+      } catch (e) {
+        // audio may fail silently, that's okay
+      }
+    }
+
+    function beepCorrect() {
+      playBeep(880, 150);
+    }
+
+    function beepIncorrect() {
+      playBeep(220, 200);
+    }
+
+    // ---------- Timer ----------
+    function resetTimer() {
+      if (timerId) {
+        clearInterval(timerId);
+        timerId = null;
+      }
+      timerDisplay.textContent = "";
+      if (!timerToggle.checked) return;
+
+      const secs = parseInt(timerSelect.value, 10) || 60;
+      remainingSeconds = secs;
+      timerDisplay.textContent = remainingSeconds + " s";
+
+      timerId = setInterval(() => {
+        remainingSeconds -= 1;
+        if (remainingSeconds <= 0) {
+          clearInterval(timerId);
+          timerId = null;
+          timerDisplay.textContent = "0 s";
+          handleTimeUp();
+        } else {
+          timerDisplay.textContent = remainingSeconds + " s";
+        }
+      }, 1000);
+    }
+
+    function handleTimeUp() {
+      if (questionChecked) return; // already answered
+      // Mark as incorrect due to timeout
+      const userAnswer = "";
+      processAnswer(userAnswer, true);
+    }
+
+    // ---------- Game logic ----------
+    function setDifficulty(diff) {
+      currentDifficulty = diff;
+      difficultyButtons.forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.diff === diff);
+      });
+      newQuestion();
+    }
+
+    function newQuestion() {
+      currentQuestion = generateQuestion(currentDifficulty);
+      const text = questionToText(currentQuestion);
+      questionDisplay.textContent = text;
+      answerInput.value = "";
+      answerInput.focus();
+
+      feedbackMessage.textContent = "";
+      feedbackMessage.className = "feedback-message";
+      correctAnswerLine.textContent = "";
+      showStepsBtn.style.display = "none";
+      stepsContainer.textContent = "";
+      questionChecked = false;
+      lastAnswerCorrect = false;
+
+      nextBtn.disabled = true;
+
+      resetTimer();
+    }
+
+    function updateStatsDisplay() {
+      statTotal.textContent = stats.total;
+      statCorrect.textContent = stats.correct;
+      const accuracy = stats.total === 0 ? 0 : Math.round((stats.correct / stats.total) * 100);
+      statAccuracy.textContent = accuracy + "%";
+      statScore.textContent = stats.score;
+      statStreak.textContent = stats.streak;
+      statBestStreak.textContent = stats.bestStreak;
+
+      // update incorrect list
+      incorrectList.innerHTML = "";
+      if (stats.incorrect.length === 0) {
+        incorrectList.textContent = "No incorrect questions yet.";
+      } else {
+        const ul = document.createElement("ul");
+        ul.style.paddingLeft = "16px";
+        stats.incorrect.forEach(item => {
+          const li = document.createElement("li");
+          li.textContent =
+            item.questionText +
+            " | Your answer: " +
+            (item.userAnswer === "" ? "[no answer]" : item.userAnswer) +
+            " | Correct: " +
+            formatNumber(item.correctAnswer);
+          ul.appendChild(li);
+        });
+        incorrectList.appendChild(ul);
+      }
+    }
+
+    function buildStepsExplanation(q) {
+      const base = q.base;
+      const pct = q.percent;
+      const pctAsDecimal = pct / 100;
+      const change = roundToTwo(base * pctAsDecimal);
+      const result = q.result;
+      const lines = [];
+
+      lines.push("Original amount: " + formatNumber(base));
+      if (q.changeType === "increase") {
+        lines.push("Percent increase: " + pct + "% → " + pctAsDecimal);
+        lines.push("Change: " + formatNumber(base) + " × " + pctAsDecimal + " = " + formatNumber(change));
+        lines.push("New value: " + formatNumber(base) + " + " + formatNumber(change) + " = " + formatNumber(result));
+      } else {
+        lines.push("Percent decrease: " + pct + "% → " + pctAsDecimal);
+        lines.push("Change: " + formatNumber(base) + " × " + pctAsDecimal + " = " + formatNumber(change));
+        lines.push("New value: " + formatNumber(base) + " − " + formatNumber(change) + " = " + formatNumber(result));
+      }
+
+      return lines;
+    }
+
+    function processAnswer(rawInput, timeUp = false) {
+      if (!currentQuestion) return;
+      questionChecked = true;
+      nextBtn.disabled = false;
+
+      if (timerId) {
+        clearInterval(timerId);
+        timerId = null;
+      }
+
+      const trimmed = rawInput.trim();
+      const userVal = parseNumericInput(trimmed);
+      const correctVal = currentQuestion.result;
+
+      stats.total += 1;
+
+      if (!timeUp && !isNaN(userVal) && Math.abs(userVal - correctVal) < 0.005) {
+        // Correct
+        lastAnswerCorrect = true;
+        stats.correct += 1;
+        stats.streak += 1;
+        if (stats.streak > stats.bestStreak) stats.bestStreak = stats.streak;
+        // scoring: +10 per correct
+        stats.score += 10;
+        // streak bonus
+        if (stats.streak > 0 && stats.streak % 5 === 0) {
+          stats.score += 5;
+        }
+
+        feedbackMessage.textContent = "Correct!";
+        feedbackMessage.className = "feedback-message correct";
+        correctAnswerLine.textContent = "";
+        showStepsBtn.style.display = "none";
+        stepsContainer.textContent = "";
+        beepCorrect();
+      } else {
+        // Incorrect
+        lastAnswerCorrect = false;
+        stats.streak = 0;
+
+        if (timeUp) {
+          feedbackMessage.textContent = "Time's up. That's not correct.";
+        } else if (trimmed === "" || isNaN(userVal)) {
+          feedbackMessage.textContent = "That is not a valid number.";
+        } else {
+          feedbackMessage.textContent = "Incorrect.";
+        }
+
+        feedbackMessage.className = "feedback-message incorrect";
+        correctAnswerLine.textContent = "Correct answer: " + formatNumber(correctVal);
+        showStepsBtn.style.display = "inline-block";
+        stepsContainer.textContent = "";
+        beepIncorrect();
+
+        // Log incorrect
+        stats.incorrect.push({
+          questionText: questionToText(currentQuestion),
+          userAnswer: trimmed,
+          correctAnswer: correctVal
+        });
+      }
+
+      updateStatsDisplay();
+    }
+
+    function handleSubmit() {
+      if (!currentQuestion) return;
+      if (!questionChecked) {
+        const raw = answerInput.value;
+        if (!raw && !timerToggle.checked) {
+          feedbackMessage.textContent = "Please enter an answer.";
+          feedbackMessage.className = "feedback-message incorrect";
+          return;
+        }
+        processAnswer(raw, false);
+      } else {
+        // already checked; treat submit as next for keyboard convenience
+        handleNext();
+      }
+    }
+
+    function handleNext() {
+      if (!questionChecked) {
+        // If user clicks Next before submitting, just generate new question
+        newQuestion();
+      } else {
+        newQuestion();
+      }
+    }
+
+    // ---------- Worksheet mode ----------
+    function generateWorksheetQuestion(diff) {
+      const q = generateQuestion(diff);
+      return q;
+    }
+
+    function renderWorksheet() {
+      const diff = worksheetDifficulty.value;
+      const count = parseInt(worksheetCount.value, 10) || 10;
+      worksheetList.innerHTML = "";
+
+      for (let i = 0; i < count; i++) {
+        const q = generateWorksheetQuestion(diff);
+        const li = document.createElement("li");
+        li.className = "worksheet-question";
+
+        const qTextSpan = document.createElement("span");
+        qTextSpan.className = "q-text";
+        qTextSpan.textContent = questionToText(q);
+        li.appendChild(qTextSpan);
+
+        const answerLine = document.createElement("div");
+        answerLine.className = "answer-line";
+        answerLine.innerHTML = "Answer: <span class=\"answer\">" + formatNumber(q.result) + "</span>";
+        li.appendChild(answerLine);
+
+        const revealBtn = document.createElement("button");
+        revealBtn.className = "reveal-one";
+        revealBtn.type = "button";
+        revealBtn.textContent = "Show answer";
+        revealBtn.addEventListener("click", () => {
+          const ansSpan = answerLine.querySelector(".answer");
+          if (ansSpan.style.display === "inline") {
+            ansSpan.style.display = "none";
+            revealBtn.textContent = "Show answer";
+          } else {
+            ansSpan.style.display = "inline";
+            revealBtn.textContent = "Hide answer";
+          }
+        });
+        li.appendChild(revealBtn);
+
+        worksheetList.appendChild(li);
+      }
+    }
+
+    function revealAllAnswers(show) {
+      const answers = worksheetList.querySelectorAll(".answer");
+      const buttons = worksheetList.querySelectorAll(".reveal-one");
+      answers.forEach(ans => {
+        ans.style.display = show ? "inline" : "none";
+      });
+      buttons.forEach(btn => {
+        btn.textContent = show ? "Hide answer" : "Show answer";
+      });
+    }
+
+    // ---------- Mode switching ----------
+    function setMode(mode) {
+      if (mode === "game") {
+        gameModeSection.style.display = "";
+        worksheetModeSection.style.display = "none";
+        modeGameBtn.classList.add("active");
+        modeWorksheetBtn.classList.remove("active");
+        modeGameBtn.setAttribute("aria-selected", "true");
+        modeWorksheetBtn.setAttribute("aria-selected", "false");
+      } else {
+        gameModeSection.style.display = "none";
+        worksheetModeSection.style.display = "";
+        modeGameBtn.classList.remove("active");
+        modeWorksheetBtn.classList.add("active");
+        modeGameBtn.setAttribute("aria-selected", "false");
+        modeWorksheetBtn.setAttribute("aria-selected", "true");
+      }
+    }
+
+    // ---------- Reset session ----------
+    function resetSession() {
+      stats = {
+        total: 0,
+        correct: 0,
+        score: 0,
+        streak: 0,
+        bestStreak: 0,
+        incorrect: []
+      };
+      updateStatsDisplay();
+      feedbackMessage.textContent = "";
+      feedbackMessage.className = "feedback-message";
+      correctAnswerLine.textContent = "";
+      showStepsBtn.style.display = "none";
+      stepsContainer.textContent = "";
+      if (timerId) {
+        clearInterval(timerId);
+        timerId = null;
+      }
+      timerDisplay.textContent = "";
+      newQuestion();
+    }
+
+    // ---------- Event listeners ----------
+    difficultyButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const diff = btn.dataset.diff;
+        setDifficulty(diff);
+      });
+    });
+
+    submitBtn.addEventListener("click", handleSubmit);
+    nextBtn.addEventListener("click", handleNext);
+
+    answerInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleSubmit();
+      } else if (e.key === "Escape") {
+        answerInput.value = "";
+      }
+    });
+
+    timerToggle.addEventListener("change", () => {
+      resetTimer();
+    });
+
+    timerSelect.addEventListener("change", () => {
+      resetTimer();
+    });
+
+    contrastToggle.addEventListener("change", () => {
+      document.body.classList.toggle("high-contrast", contrastToggle.checked);
+    });
+
+    resetSessionBtn.addEventListener("click", () => {
+      resetSession();
+    });
+
+    showStepsBtn.addEventListener("click", () => {
+      if (!currentQuestion) return;
+      const lines = buildStepsExplanation(currentQuestion);
+      stepsContainer.innerHTML = "";
+      lines.forEach(line => {
+        const p = document.createElement("p");
+        p.textContent = line;
+        stepsContainer.appendChild(p);
+      });
+    });
+
+    modeGameBtn.addEventListener("click", () => setMode("game"));
+    modeWorksheetBtn.addEventListener("click", () => setMode("worksheet"));
+
+    generateWorksheetBtn.addEventListener("click", () => {
+      renderWorksheet();
+    });
+
+    revealAllBtn.addEventListener("click", () => {
+      revealAllAnswers(true);
+    });
+
+    hideAllBtn.addEventListener("click", () => {
+      revealAllAnswers(false);
+    });
+
+    // ---------- Dev tests ----------
+    function isDevMode() {
+      const params = new URLSearchParams(window.location.search);
+      return params.has("dev") && params.get("dev") === "1";
+    }
+
+    function runDevTests() {
+      const results = [];
+      function log(msg) {
+        results.push(msg);
+      }
+
+      // 1. EASY percent range
+      let okEasyPct = true;
+      for (let i = 0; i < 100; i++) {
+        const q = generateQuestion("easy");
+        if (q.percent < 5 || q.percent > 30 || q.percent % 1 !== 0) {
+          okEasyPct = false;
+          log("Easy percent out of range or not whole: " + q.percent);
+          break;
+        }
+      }
+      log("Test 1 (Easy percent range & whole): " + (okEasyPct ? "PASS" : "FAIL"));
+
+      // 2. MEDIUM percent range and <=2 dp result
+      let okMedium = true;
+      for (let i = 0; i < 100; i++) {
+        const q = generateQuestion("medium");
+        if (q.percent < 10 || q.percent > 60) {
+          okMedium = false;
+          log("Medium percent out of range: " + q.percent);
+          break;
+        }
+        const str = q.result.toString();
+        if (str.includes(".")) {
+          const dec = str.split(".")[1];
+          if (dec.length > 2) {
+            okMedium = false;
+            log("Medium result has more than 2 decimals: " + q.result);
+            break;
+          }
+        }
+      }
+      log("Test 2 (Medium percent & decimals): " + (okMedium ? "PASS" : "FAIL"));
+
+      // 3. HARD results <= 2 decimals
+      let okHard = true;
+      for (let i = 0; i < 100; i++) {
+        const q = generateQuestion("hard");
+        const str = q.result.toString();
+        if (str.includes(".")) {
+          const dec = str.split(".")[1];
+          if (dec.length > 2) {
+            okHard = false;
+            log("Hard result has more than 2 decimals: " + q.result);
+            break;
+          }
+        }
+      }
+      log("Test 3 (Hard decimals length): " + (okHard ? "PASS" : "FAIL"));
+
+      // 4. No 0% or 100%
+      let noZeroOrHundred = true;
+      for (let i = 0; i < 150; i++) {
+        const q = generateQuestion("random");
+        if (q.percent === 0 || q.percent === 100) {
+          noZeroOrHundred = false;
+          log("Percent is 0 or 100: " + q.percent);
+          break;
+        }
+      }
+      log("Test 4 (No 0% or 100%): " + (noZeroOrHundred ? "PASS" : "FAIL"));
+
+      // 5. Answer checking tolerance
+      const testQ = { base: 100, percent: 15, changeType: "increase", result: 115.0 };
+      const approxCorrect = 115.004;
+      const approxWrong = 115.1;
+      const approxCorrectOK = Math.abs(approxCorrect - testQ.result) < 0.005;
+      const approxWrongOK = Math.abs(approxWrong - testQ.result) >= 0.005;
+      log("Test 5 (Check tolerance): " + (approxCorrectOK && approxWrongOK ? "PASS" : "FAIL"));
+
+      // 6. Comma decimal parsing
+      const parsedComma = parseNumericInput("123,45");
+      log("Test 6 (Comma parsing): " + (Math.abs(parsedComma - 123.45) < 1e-9 ? "PASS" : "FAIL"));
+
+      // 7. Random difficulty mapping
+      let randomCoversAll = {easy:false, medium:false, hard:false};
+      for (let i = 0; i < 100; i++) {
+        const q = generateQuestion("random");
+        randomCoversAll[q.difficulty] = true;
+      }
+      const allCov = randomCoversAll.easy && randomCoversAll.medium && randomCoversAll.hard;
+      log("Test 7 (Random covers all difficulties): " + (allCov ? "PASS" : "FAIL"));
+
+      // 8. Worksheet generation count
+      const testCount = 7;
+      worksheetCount.value = testCount.toString();
+      worksheetDifficulty.value = "easy";
+      renderWorksheet();
+      const liCount = worksheetList.querySelectorAll("li").length;
+      log("Test 8 (Worksheet question count): " + (liCount === testCount ? "PASS" : "FAIL"));
+
+      // 9. Thousands formatting
+      const formatted = formatNumber(12345.67);
+      log("Test 9 (Thousands separator spaces): " + (formatted === "12 345.67" ? "PASS" : "FAIL") + " (" + formatted + ")");
+
+      // 10. High contrast toggle
+      const previousClass = document.body.classList.contains("high-contrast");
+      document.body.classList.toggle("high-contrast", true);
+      const afterSet = document.body.classList.contains("high-contrast");
+      document.body.classList.toggle("high-contrast", previousClass);
+      log("Test 10 (High contrast class): " + (afterSet ? "PASS" : "FAIL"));
+
+      devOutput.textContent = results.join("\n");
+    }
+
+    if (isDevMode()) {
+      devPanel.style.display = "block";
+    }
+
+    if (runDevTestsBtn) {
+      runDevTestsBtn.addEventListener("click", runDevTests);
+    }
+
+    // ---------- Initial setup ----------
+    window.addEventListener("load", () => {
+      // High contrast default: off
+      contrastToggle.checked = false;
+      document.body.classList.remove("high-contrast");
+
+      updateStatsDisplay();
+      newQuestion();
+      renderWorksheet();
+    });
+  </script>
+</body>
+</html>
